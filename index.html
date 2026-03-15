@@ -29,7 +29,7 @@
         <form id="simulatorForm" class="space-y-6">
             
             <div class="hidden">
-                <input type="url" id="webhookUrl" value="PEGA_TU_URL_DE_MAKE_AQUI" required>
+                <input type="url" id="webhookUrl" value="https://hook.us2.make.com/f6h441b2wpgnxd7bxk0m2rqus8whxeip" required>
             </div>
 
             <div>
@@ -54,39 +54,4 @@
             
             const btn = document.getElementById('sendBtn');
             const statusMsg = document.getElementById('statusMsg');
-            const url = document.getElementById('webhookUrl').value;
-            const mensaje = document.getElementById('mensajeLead').value;
-
-            if(url === "PEGA_TU_URL_DE_MAKE_AQUI") {
-                alert("¡Arquitecto! Olvidaste pegar la URL de tu Webhook en el código (línea 31).");
-                return;
-            }
-
-            btn.innerHTML = '<span class="pulse">Analizando con IA...</span>';
-            btn.disabled = true;
-            btn.classList.add('opacity-80');
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensaje: mensaje })
-                });
-
-                statusMsg.classList.remove('hidden', 'bg-red-50', 'text-red-700');
-                statusMsg.classList.add('bg-green-50', 'text-green-700', 'border', 'border-green-200');
-                statusMsg.innerHTML = '✅ <b>¡Magia!</b> Tu lead fue analizado y guardado en la bóveda corporativa.';
-            } catch (error) {
-                statusMsg.classList.remove('hidden', 'bg-green-50', 'text-green-700');
-                statusMsg.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
-                statusMsg.innerHTML = '❌ Hubo un error de conexión.';
-            } finally {
-                btn.innerHTML = 'Enviar a la Bóveda de ImmoKraft';
-                btn.disabled = false;
-                btn.classList.remove('opacity-80');
-                document.getElementById('mensajeLead').value = ''; 
-            }
-        });
-    </script>
-</body>
-</html>
+            const url = document.getElementById('webhookUrl
