@@ -39,7 +39,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200">
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm uppercase">Fecha de Ingreso</th>
+                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm uppercase">Fecha</th>
                             <th class="py-4 px-6 font-semibold text-slate-600 text-sm uppercase">Cliente</th>
                             <th class="py-4 px-6 font-semibold text-slate-600 text-sm uppercase">Teléfono</th>
                             <th class="py-4 px-6 font-semibold text-slate-600 text-sm uppercase">Presupuesto / Info</th>
@@ -54,7 +54,6 @@
     </div>
 
     <script>
-        // 🚨 TU CONTRASEÑA SECRETA ESTÁ AQUÍ (Puedes cambiar "top100" por la que quieras)
         const PASSWORD_SECRETA = "top100";
 
         function checkPassword() {
@@ -68,21 +67,21 @@
             }
         }
 
-        // Permite apretar "Enter" para entrar
         document.getElementById("passInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { event.preventDefault(); checkPassword(); }
         });
 
-        // Conexión oficial a tu Bóveda de Supabase
         const supabaseUrl = 'https://xqlvgzosvoodjtpxpgux.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxbHZnem9zdm9vZGp0cHhwZ3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NTUzNDMsImV4cCI6MjA4OTAzMTM0M30.n9AhJIDzqZ_5qOHADcL2XnAYzF3YTyEw_vMkL8rF0pA';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Aquí estaba el cortocircuito, ¡ya está arreglado!
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function cargarLeads() {
             const tbody = document.getElementById('tablaLeads');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500">Buscando prospectos en la bóveda... ⏳</td></tr>';
 
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('leads_inmobiliarios')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -93,25 +92,22 @@
                 return;
             }
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500">Tu bóveda está vacía. ¡Ve a conseguir leads!</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = ''; // Limpiar mensaje de carga
+            tbody.innerHTML = ''; 
 
             data.forEach(lead => {
-                // Formatear la fecha para que se vea bonita
                 const fecha = new Date(lead.created_at).toLocaleDateString('es-CL', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit'
                 });
                 
-                // Extraer el teléfono y limpiarlo para el link de WhatsApp
                 const fono = lead.telefono || '';
                 const fonoLimpio = fono.replace(/[^0-9]/g, ''); 
                 
-                // Mensaje predeterminado para WhatsApp
-                const msjWa = encodeURIComponent(`Hola ${lead.nombre_cliente}, soy de ImmoKraft. Vi que estás buscando una propiedad. ¿Cómo te puedo ayudar?`);
+                const msjWa = encodeURIComponent(`Hola ${lead.nombre_cliente || ''}, soy de ImmoKraft. Vi que estás buscando una propiedad. ¿Cómo te puedo ayudar?`);
                 const linkWa = `https://wa.me/${fonoLimpio}?text=${msjWa}`;
 
                 const tr = document.createElement('tr');
