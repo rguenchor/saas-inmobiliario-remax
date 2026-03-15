@@ -3,160 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard CRM - Motor IA</title>
+    <title>SaaS Master CRM - ImmoKraft IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
+        .score-hot { background-color: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+        .score-warm { background-color: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+        .score-cold { background-color: #f0f9ff; color: #0284c7; border: 1px solid #e0f2fe; }
     </style>
 </head>
-<body class="p-6">
-    
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
-            <div class="text-center mb-6">
-                <div class="text-5xl mb-4">⚙️</div>
-                <h2 class="text-2xl font-bold text-slate-800">Acceso al CRM IA</h2>
-                <p class="text-slate-500 text-sm mt-1">Ingresa tus credenciales de agencia</p>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre de tu Corredora/Agencia:</label>
-                    <input type="text" id="nombreAgencia" placeholder="Ej: Juan Pérez Propiedades" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0f172a] focus:border-transparent">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña de Acceso:</label>
-                    <input type="password" id="passInput" placeholder="Tu clave secreta" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0f172a] focus:border-transparent">
-                </div>
+<body class="min-h-screen">
 
-                <button onclick="iniciarSesion()" class="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg transition-colors mt-2">
-                    Acceder a la Bóveda
+    <div id="loginScreen" class="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-[100]">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 text-center">
+            <div class="bg-slate-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-4xl">🏢</span>
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">ImmoKraft Pro</h2>
+            <p class="text-slate-500 mb-8 font-medium">Panel de Control Gerencial</p>
+            <div class="space-y-4">
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-400 uppercase ml-1">Nombre de la Agencia</label>
+                    <input type="text" id="nombreAgencia" placeholder="Ej: Elite Propiedades" class="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all">
+                </div>
+                <div class="text-left">
+                    <label class="text-xs font-bold text-slate-400 uppercase ml-1">Contraseña Master</label>
+                    <input type="password" id="passInput" placeholder="••••••••" class="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all">
+                </div>
+                <button onclick="iniciarSesion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-200 mt-2">
+                    Acceder al Ecosistema
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="dashboard" class="max-w-6xl mx-auto hidden">
-        <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-800" id="tituloAgencia">Dashboard de Leads</h1>
-                <p class="text-emerald-600 font-semibold text-sm mt-1 flex items-center gap-1">
-                    <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>
-                    Sistema Motor IA Activo
-                </p>
+    <div id="dashboard" class="hidden">
+        <nav class="bg-[#0f172a] text-white py-6 px-8 mb-8 shadow-xl">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight" id="tituloAgencia uppercase">DASHBOARD</h1>
+                    <div class="flex items-center gap-2 text-emerald-400 text-sm font-bold mt-1">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> MOTOR IA CONECTADO
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportarCSV()" class="bg-slate-800 hover:bg-slate-700 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-700">Descargar Leads (.csv)</button>
+                    <button onclick="cargarLeads()" class="bg-blue-600 hover:bg-blue-500 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-blue-900/20">🔄 Actualizar Bóveda</button>
+                </div>
             </div>
-            <button onclick="cargarLeads()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors border border-slate-300">
-                🔄 Refrescar Datos
-            </button>
-        </div>
+        </nav>
 
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200">
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm">FECHA</th>
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm">CLIENTE</th>
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm">TELÉFONO</th>
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm">INFO / PRESUPUESTO</th>
-                            <th class="py-4 px-6 font-semibold text-slate-600 text-sm text-right">CONTACTO RÁPIDO</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaLeads" class="divide-y divide-slate-100">
-                        </tbody>
-                </table>
+        <main class="max-w-7xl mx-auto px-4 pb-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100 flex flex-col items-center">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-4">Calidad de Cartera</h3>
+                    <div class="w-40 h-40">
+                        <canvas id="chartLeads"></canvas>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-white p-8 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-center">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-2">Resumen de Operación</h3>
+                    <div id="statsSummary" class="grid grid-cols-3 gap-4">
+                        </div>
+                </div>
             </div>
-        </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h2 class="font-extrabold text-slate-800 text-lg">Prospectos Recientes</h2>
+                    <div class="flex gap-2">
+                        <select id="filtroOrden" onchange="cargarLeads()" class="text-sm border-slate-200 rounded-lg px-3 py-1 outline-none">
+                            <option value="score">Mejores Leads</option>
+                            <option value="fecha">Más Recientes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[11px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                                <th class="py-5 px-8">Score & Status</th>
+                                <th class="py-5 px-6">Cliente & Fono</th>
+                                <th class="py-5 px-6">Perfil & Ubicación</th>
+                                <th class="py-5 px-6">Análisis de la IA</th>
+                                <th class="py-5 px-8 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaLeads" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
         const PASSWORD_SECRETA = "top100";
-        let nombreEmpresaGlobal = "Mi Corredora"; // Valor por defecto
-
-        function iniciarSesion() {
-            const pass = document.getElementById('passInput').value;
-            const nombreAgencia = document.getElementById('nombreAgencia').value.trim();
-
-            if(pass === PASSWORD_SECRETA) {
-                // Si el usuario no pone nombre, usamos uno genérico
-                nombreEmpresaGlobal = nombreAgencia !== "" ? nombreAgencia : "nuestra corredora";
-                
-                // Actualizamos el título del panel
-                document.getElementById('tituloAgencia').innerText = `Leads: ${nombreEmpresaGlobal}`;
-                
-                // Ocultamos login y mostramos tabla
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboard').classList.remove('hidden');
-                
-                cargarLeads();
-            } else {
-                alert("❌ Contraseña incorrecta.");
-            }
-        }
-
-        // Permite apretar "Enter" en la contraseña
-        document.getElementById("passInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { event.preventDefault(); iniciarSesion(); }
-        });
-
+        let nombreEmpresa = "Inmobiliaria";
+        let chartInstance = null;
+        
         const supabaseUrl = 'https://xqlvgzosvoodjtpxpgux.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxbHZnem9zdm9vZGp0cHhwZ3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NTUzNDMsImV4cCI6MjA4OTAzMTM0M30.n9AhJIDzqZ_5qOHADcL2XnAYzF3YTyEw_vMkL8rF0pA';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        function iniciarSesion() {
+            if(document.getElementById('passInput').value === PASSWORD_SECRETA) {
+                nombreEmpresa = document.getElementById('nombreAgencia').value || "Agencia Pro";
+                document.getElementById('tituloAgencia').innerText = `LEADS: ${nombreEmpresa.toUpperCase()}`;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                cargarLeads();
+            } else { alert("Acceso Denegado"); }
+        }
+
         async function cargarLeads() {
             const tbody = document.getElementById('tablaLeads');
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500">Cargando base de datos segura... ⏳</td></tr>';
+            const orden = document.getElementById('filtroOrden').value;
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-20 text-slate-400 animate-pulse font-bold">ACCEDIENDO A LA BÓVEDA SEGURA...</td></tr>';
 
             const { data, error } = await supabaseClient
                 .from('leads_inmobiliarios')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order(orden === 'score' ? 'score_lead' : 'created_at', { ascending: false });
 
-            if (error) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-red-500">❌ Error de conexión al servidor CRM.</td></tr>';
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500">No hay nuevos prospectos en la base de datos.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = ''; 
+            if (error) return;
+            tbody.innerHTML = '';
+            
+            let calientes = 0, tibios = 0, frios = 0;
 
             data.forEach(lead => {
-                const fecha = new Date(lead.created_at).toLocaleDateString('es-CL', {
-                    day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit'
-                });
-                
-                const fono = lead.telefono || '';
-                const fonoLimpio = fono.replace(/[^0-9]/g, ''); 
-                
-                const nombreCliente = lead.nombre_cliente || 'Cliente';
-                
-                // 🚀 AQUÍ ESTÁ LA MAGIA SAAS: El mensaje usa la variable de la empresa que puso el cliente al iniciar sesión
-                const msjWa = encodeURIComponent(`Hola ${nombreCliente}, soy de ${nombreEmpresaGlobal}. Vi que solicitaste información sobre una propiedad. ¿En qué te puedo asesorar hoy?`);
-                const linkWa = `https://wa.me/${fonoLimpio}?text=${msjWa}`;
+                const score = lead.score_lead || 0;
+                if(score >= 70) calientes++; else if(score >= 40) tibios++; else frios++;
 
+                const fonoLimpio = (lead.telefono || '').replace(/[^0-9]/g, '');
+                const msjWa = encodeURIComponent(`Hola ${lead.nombre_cliente}, soy de ${nombreEmpresa}. Analizamos tu solicitud para ${lead.tipo_operacion} un ${lead.tipo_propiedad} en ${lead.ubicacion_deseada}. ¡Tengo el perfil ideal! ¿Hablemos?`);
+                
+                let badgeClass = score >= 70 ? 'score-hot' : (score >= 40 ? 'score-warm' : 'score-cold');
+                
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.className = "hover:bg-slate-50 transition-all group";
                 tr.innerHTML = `
-                    <td class="py-4 px-6 text-[14px] text-slate-500">${fecha}</td>
-                    <td class="py-4 px-6 text-[15px] font-bold text-slate-800 capitalize">${nombreCliente}</td>
-                    <td class="py-4 px-6 text-[15px] text-slate-600 font-medium">${lead.telefono || 'N/A'}</td>
-                    <td class="py-4 px-6 text-[14px] text-slate-700">${lead.presupuesto || 'Sin detalles'}</td>
-                    <td class="py-4 px-6 text-right">
-                        <a href="${linkWa}" target="_blank" class="inline-flex items-center justify-center bg-[#25d366] hover:bg-[#128c7e] text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm w-full md:w-auto">
-                            💬 Iniciar Chat
-                        </a>
+                    <td class="py-6 px-8">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${badgeClass}">${score}</span>
+                            <span class="text-[10px] font-black uppercase text-slate-400 tracking-tighter">${lead.estado || 'NUEVO'}</span>
+                        </div>
                     </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-    </script>
-</body>
-</html>
+                    <td class="py-6 px-6">
+                        <div class="font-bold text-slate-900">${lead.nombre_cliente}</div>
+                        <div class="text-xs text-slate-400 font-medium tracking-tight">${lead.telefono || 'Sin fono'}</div>
+                    </td>
+                    <td class="py-6 px-6 text-sm">
+                        <div class="flex items-center gap-1.5 font-bold text-slate-700 italic">
+                            <span class="text-blue-600">●</span> ${lead.tipo_operacion}
+                        </div>
+                        <div class="text-slate-400 text-xs">${lead.tipo_propiedad} en ${lead.ubicacion_deseada}</div>
+                    </td>
+                    <td class="py-6 px-6">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-[200px] italic">
+                            "${lead.comentario_ia || 'Analizando perfil con IA...'}"
+                        </div>
+                    </td>
+                    <td class="py-6 px-8 text-right">
+                        <a href="
+                        
