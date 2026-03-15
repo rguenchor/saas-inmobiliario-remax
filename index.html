@@ -14,7 +14,7 @@
             <h2 class="text-2xl font-bold text-[#1e3a8a] mt-2">Simulador IA Re/Max</h2>
         </div>
         <form id="simulatorForm" class="space-y-4">
-            <input type="hidden" id="webhookUrl" value="PEGA_TU_URL_DE_MAKE_AQUI">
+            <input type="hidden" id="webhookUrl" value="https://hook.us2.make.com/f6h441b2wpgnxd7bxk0m2rqus8whxeip">
             
             <div>
                 <label class="font-semibold text-gray-700 text-sm">Teléfono (Simulado)</label>
@@ -22,7 +22,7 @@
             </div>
             <div>
                 <label class="font-semibold text-gray-700 text-sm">Mensaje del Cliente</label>
-                <textarea id="mensajeLead" rows="4" required class="w-full p-3 border rounded-lg" placeholder="Hola, busco casa en Concón..."></textarea>
+                <textarea id="mensajeLead" rows="4" required class="w-full p-3 border rounded-lg" placeholder="Hola, busco casa en Concón, tengo crédito aprobado..."></textarea>
             </div>
             <button type="submit" id="sendBtn" class="w-full p-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">Enviar a la Bóveda</button>
             <div id="statusMsg" class="hidden mt-4 p-4 rounded-lg text-center font-medium"></div>
@@ -35,12 +35,12 @@
             const btn = document.getElementById('sendBtn');
             const statusMsg = document.getElementById('statusMsg');
             const url = document.getElementById('webhookUrl').value;
-            
-            if(url === "PEGA_TU_URL_DE_MAKE_AQUI") return alert("¡Falta la URL del Webhook!");
 
-            btn.innerText = 'Analizando...'; btn.disabled = true;
+            btn.innerText = 'Analizando con Inteligencia Artificial...'; 
+            btn.disabled = true;
+            
             try {
-                await fetch(url, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -49,13 +49,18 @@
                         canal: "Web"
                     })
                 });
+
+                if (!response.ok) throw new Error('Error en el webhook');
+
                 statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700';
-                statusMsg.innerHTML = '✅ Lead enviado y analizado.';
+                statusMsg.innerHTML = '✅ ¡Magia! Lead enviado, analizado y guardado exitosamente.';
+                document.getElementById('simulatorForm').reset();
             } catch (error) {
                 statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700';
-                statusMsg.innerHTML = '❌ Error de conexión.';
+                statusMsg.innerHTML = '❌ Error de conexión con Make.';
             } finally {
-                btn.innerText = 'Enviar a la Bóveda'; btn.disabled = false;
+                btn.innerText = 'Enviar a la Bóveda'; 
+                btn.disabled = false;
             }
         });
     </script>
