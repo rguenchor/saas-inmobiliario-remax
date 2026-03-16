@@ -3,159 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Gerencial - RE/MAX Elite</title>
+    <title>ImmoKraft - Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .score-hot { background: #fee2e2; color: #991b1b; }
-        .score-warm { background: #fef3c7; color: #92400e; }
-        .score-cold { background: #e0f2fe; color: #075985; }
+    <style> 
+        body { background-color: #f1f5f9; } 
+        .hot-row { border-left: 4px solid #ef4444; }
+        .warm-row { border-left: 4px solid #f59e0b; }
+        .cold-row { border-left: 4px solid #3b82f6; }
     </style>
 </head>
-<body>
-
-    <div id="loginScreen" class="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-[100]">
-        <div class="bg-white p-10 rounded-3xl w-full max-w-md text-center">
-            <h2 class="text-2xl font-extrabold text-blue-900 mb-6">RE/MAX Inteligencia</h2>
-            <input type="text" id="nombreCorredor" placeholder="Agente (Ej: Heinz)" class="w-full p-3 border rounded-xl mb-4 outline-none">
-            <input type="password" id="passInput" placeholder="Clave: top100" class="w-full p-3 border rounded-xl mb-6 outline-none">
-            <button onclick="entrar()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">Acceder</button>
+<body class="p-6">
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-96 text-center border-t-8 border-[#003da5]">
+            <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-12 mx-auto mb-6 object-contain">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Acceso Agentes</h2>
+            <input type="text" id="agentName" placeholder="Tu Nombre (Ej: Heinz)" class="w-full mb-3 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+            <input type="password" id="agentPass" placeholder="Clave Maestra" class="w-full mb-4 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+            <button onclick="login()" class="w-full bg-[#dc1c2e] text-white font-bold p-3 rounded hover:bg-red-700 transition">Ingresar al Radar</button>
         </div>
     </div>
 
-    <div id="dashboard" class="hidden">
-        <nav class="bg-[#0f172a] text-white py-5 px-8 mb-6 shadow-xl flex justify-between items-center">
-            <div>
-                <p class="text-[10px] text-blue-400 uppercase tracking-widest">Agente Autorizado</p>
-                <h1 id="displayCorredor" class="text-xl font-extrabold italic">AGENTE</h1>
+    <div id="dashboardScreen" class="hidden max-w-7xl mx-auto">
+        <div class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm mb-6 border-b-4 border-[#003da5]">
+            <div class="flex items-center gap-4">
+                <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-10 object-contain">
+                <div>
+                    <h1 class="text-2xl font-black text-gray-800 tracking-tight">Radar de Leads Inteligente</h1>
+                    <p class="text-gray-500 text-sm">Bienvenido, Agente <span id="displayAgent" class="font-bold text-[#dc1c2e]"></span></p>
+                </div>
             </div>
-            <button onclick="fetchLeads()" class="bg-blue-600 px-5 py-2 rounded-lg font-bold text-sm">🔄 Sincronizar</button>
-        </nav>
+            <button onclick="loadLeads()" class="bg-[#003da5] text-white px-6 py-2 rounded-lg hover:bg-blue-800 font-bold shadow transition flex items-center gap-2">
+                <span>🔄</span> Sincronizar Radar
+            </button>
+        </div>
 
-        <main class="max-w-7xl mx-auto px-4 pb-10">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-wrap gap-4 items-end">
-                <div class="flex-1 min-w-[200px]">
-                    <label class="text-xs font-bold text-slate-500 uppercase">Buscar (Nombre, Fono, Zona)</label>
-                    <input type="text" id="filtroTexto" onkeyup="aplicarFiltros()" placeholder="Ej: Las Condes, +569..." class="w-full p-2 border rounded-lg mt-1 text-sm outline-none focus:border-blue-500">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm col-span-2">
+                <h3 class="font-bold text-gray-700 mb-3 text-sm uppercase tracking-wider">Protocolo de Acción por Temperatura</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-100">
+                        <span class="text-red-600 font-bold flex items-center gap-1">🔥 Fuego (Score 80+)</span>
+                        <p class="text-xs text-gray-600 mt-1">Crédito aprobado o contado. Alta urgencia. <b>Contactar en menos de 5 min.</b></p>
+                    </div>
+                    <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                        <span class="text-yellow-600 font-bold flex items-center gap-1">☀️ Tibio (Score 45-79)</span>
+                        <p class="text-xs text-gray-600 mt-1">Buscando opciones, cotizando. <b>Enviar catálogo y agendar visita.</b></p>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <span class="text-blue-600 font-bold flex items-center gap-1">❄️ Frío (Score 0-44)</span>
+                        <p class="text-xs text-gray-600 mt-1">Curiosos o sin presupuesto claro. <b>Agregar a campaña de email nurturing.</b></p>
+                    </div>
                 </div>
-                <div class="w-40">
-                    <label class="text-xs font-bold text-slate-500 uppercase">Operación</label>
-                    <select id="filtroOperacion" onchange="aplicarFiltros()" class="w-full p-2 border rounded-lg mt-1 text-sm outline-none">
-                        <option value="">Todas</option>
-                        <option value="Compra">Compra</option>
-                        <option value="Arriendo">Arriendo</option>
-                        <option value="Venta">Venta</option>
-                    </select>
-                </div>
-                <div class="w-40">
-                    <label class="text-xs font-bold text-slate-500 uppercase">Temperatura</label>
-                    <select id="filtroTemp" onchange="aplicarFiltros()" class="w-full p-2 border rounded-lg mt-1 text-sm outline-none">
-                        <option value="">Todas</option>
-                        <option value="Fuego">🔥 Fuego (Caliente)</option>
-                        <option value="Tibio">☀️ Tibio</option>
-                        <option value="Frío">❄️ Frío</option>
-                    </select>
-                </div>
-                <button onclick="limpiarFiltros()" class="bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-200">Limpiar</button>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50 text-[10px] font-black uppercase text-slate-400 border-b">
-                        <tr>
-                            <th class="p-5">Temp & Score</th>
-                            <th class="p-5">Lead / Canal</th>
-                            <th class="p-5">Búsqueda</th>
-                            <th class="p-5">Análisis IA</th>
-                            <th class="p-5 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leadTable" class="divide-y divide-slate-100"></tbody>
-                </table>
+            <div class="bg-white p-5 rounded-xl shadow-sm flex flex-col justify-center space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Filtrar por Estado</label>
+                    <select id="filterSelect" onchange="applyFilters()" class="w-full p-2 border rounded bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Todos">Mostrar Todos</option>
+                        <option value="Fuego">Solo Fuego 🔥</option>
+                        <option value="Tibio">Solo Tibio ☀️</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Ordenar Lista</label>
+                    <select id="sortSelect" onchange="applyFilters()" class="w-full p-2 border rounded bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="fecha_desc">Más recientes primero ⬇️</option>
+                        <option value="fecha_asc">Más antiguos primero ⬆️</option>
+                        <option value="score_desc">Mayor Score primero ⭐</option>
+                    </select>
+                </div>
             </div>
-        </main>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-gray-600 border-b">
+                    <tr>
+                        <th class="p-4 font-bold">Fecha</th>
+                        <th class="p-4 font-bold">Cliente</th>
+                        <th class="p-4 font-bold">Interés & Presupuesto</th>
+                        <th class="p-4 font-bold">Score & Temp.</th>
+                        <th class="p-4 font-bold">Análisis Estratégico IA</th>
+                        <th class="p-4 font-bold text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="leadsTableBody" class="divide-y divide-gray-100">
+                    </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        const S_URL = 'https://xqlvgzosvoodjtpxpgux.supabase.co';
-        const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxbHZnem9zdm9vZGp0cHhwZ3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NTUzNDMsImV4cCI6MjA4OTAzMTM0M30.n9AhJIDzqZ_5qOHADcL2XnAYzF3YTyEw_vMkL8rF0pA';
-        const sb = supabase.createClient(S_URL, S_KEY);
-        let todosLosLeads = []; // Memoria global para los filtros
+        // --- INSERTA AQUÍ TUS CLAVES DE SUPABASE ---
+        const SUPABASE_URL = 'PON_TU_URL_AQUI'; 
+        const SUPABASE_KEY = 'PON_TU_ANON_KEY_AQUI'; 
+        // -------------------------------------------
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let allLeads = []; // Guardamos los leads en memoria para filtrarlos rápido
 
-        function entrar() {
-            if(document.getElementById('passInput').value === "top100") {
-                document.getElementById('displayCorredor').innerText = document.getElementById('nombreCorredor').value || "Heinz";
+        function login() {
+            if(document.getElementById('agentPass').value === 'top100') {
                 document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                fetchLeads();
-            } else { alert("Clave incorrecta"); }
-        }
-
-        async function fetchLeads() {
-            document.getElementById('leadTable').innerHTML = '<tr><td colspan="5" class="p-10 text-center animate-pulse">Cargando Bóveda...</td></tr>';
-            const { data, error } = await sb.from('leads_inmobiliarios').select('*').order('created_at', { ascending: false });
-            if (!error) {
-                todosLosLeads = data;
-                aplicarFiltros();
+                document.getElementById('dashboardScreen').classList.remove('hidden');
+                document.getElementById('displayAgent').innerText = document.getElementById('agentName').value || 'Corredor';
+                loadLeads();
+            } else {
+                alert('Clave incorrecta');
             }
         }
 
-        function aplicarFiltros() {
-            const txt = document.getElementById('filtroTexto').value.toLowerCase();
-            const op = document.getElementById('filtroOperacion').value;
-            const temp = document.getElementById('filtroTemp').value;
+        async function loadLeads() {
+            const { data, error } = await supabase.from('leads_inmobiliarios').select('*');
+            if (error) { alert("Error conectando a la base de datos"); return; }
+            
+            allLeads = data;
+            applyFilters();
+        }
 
-            const filtrados = todosLosLeads.filter(l => {
-                const matchTxt = (l.nombre_cliente||'').toLowerCase().includes(txt) || (l.telefono||'').includes(txt) || (l.ubicacion_deseada||'').toLowerCase().includes(txt);
-                const matchOp = op === "" || l.tipo_operacion === op;
-                const matchTemp = temp === "" || l.temperatura_lead === temp;
-                return matchTxt && matchOp && matchTemp;
+        function applyFilters() {
+            const filterVal = document.getElementById('filterSelect').value;
+            const sortVal = document.getElementById('sortSelect').value;
+            let filtered = [...allLeads];
+
+            // 1. Filtrar
+            if(filterVal !== 'Todos') {
+                filtered = filtered.filter(l => l.temperatura_lead && l.temperatura_lead.includes(filterVal));
+            }
+
+            // 2. Ordenar
+            filtered.sort((a, b) => {
+                if (sortVal === 'fecha_desc') return new Date(b.created_at) - new Date(a.created_at);
+                if (sortVal === 'fecha_asc') return new Date(a.created_at) - new Date(b.created_at);
+                if (sortVal === 'score_desc') return (b.score_lead || 0) - (a.score_lead || 0);
+                return 0;
             });
 
-            renderTabla(filtrados);
+            renderTable(filtered);
         }
 
-        function limpiarFiltros() {
-            document.getElementById('filtroTexto').value = '';
-            document.getElementById('filtroOperacion').value = '';
-            document.getElementById('filtroTemp').value = '';
-            aplicarFiltros();
-        }
+        function renderTable(data) {
+            const tbody = document.getElementById('leadsTableBody');
+            tbody.innerHTML = '';
+            
+            data.forEach(lead => {
+                let tempIcon = '❄️ Frío';
+                let rowClass = 'cold-row';
+                let scoreColor = 'bg-blue-100 text-blue-800';
+                
+                if(lead.temperatura_lead === 'Fuego') { tempIcon = '🔥 Fuego'; rowClass = 'hot-row bg-red-50/30'; scoreColor = 'bg-red-100 text-red-800'; }
+                else if(lead.temperatura_lead === 'Tibio') { tempIcon = '☀️ Tibio'; rowClass = 'warm-row'; scoreColor = 'bg-yellow-100 text-yellow-800'; }
 
-        function renderTabla(data) {
-            const container = document.getElementById('leadTable');
-            container.innerHTML = '';
-            if(data.length === 0) return container.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-slate-400">No hay leads que coincidan con los filtros.</td></tr>';
+                // Formatear Fecha
+                const dateObj = new Date(lead.created_at);
+                const fechaFormat = dateObj.toLocaleDateString('es-CL', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
 
-            data.forEach(l => {
-                const s = l.score_lead || 0;
-                let color = s >= 80 ? 'score-hot' : (s >= 45 ? 'score-warm' : 'score-cold');
-                const fonoLimpio = (l.telefono || '').replace(/\D/g,'');
-                const msg = encodeURIComponent(`Hola ${l.nombre_cliente || ''}, soy ${document.getElementById('displayCorredor').innerText} de RE/MAX. ¿Hablemos sobre tu búsqueda en ${l.ubicacion_deseada}?`);
+                // Limpiar teléfono para el link de WhatsApp (quitar espacios o +)
+                const cleanPhone = lead.telefono ? lead.telefono.replace(/\D/g, '') : '';
+                const waLink = cleanPhone ? `https://wa.me/${cleanPhone}` : '#';
 
-                container.innerHTML += `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-5"><span class="px-3 py-1 rounded-lg font-black text-[11px] uppercase ${color}">${l.temperatura_lead || 'N/A'} (${s})</span></td>
-                        <td class="p-5">
-                            <div class="font-bold text-slate-800">${l.nombre_cliente || 'Sin Nombre'}</div>
-                            <div class="text-[10px] font-bold text-slate-400">📞 ${l.telefono} | 🌐 ${l.origen_lead || 'Web'}</div>
-                        </td>
-                        <td class="p-5 text-sm">
-                            <div class="font-bold text-blue-600">${l.tipo_operacion || '-'} ${l.tipo_propiedad || '-'}</div>
-                            <div class="text-slate-500 text-xs">${l.ubicacion_deseada || 'Zona no definida'}</div>
-                        </td>
-                        <td class="p-5">
-                            <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 border-l-2 border-blue-500">
-                                ${l.comentario_ia || 'Sin análisis.'}
-                            </div>
-                        </td>
-                        <td class="p-5 text-right">
-                            <a href="https://wa.me/${fonoLimpio}?text=${msg}" target="_blank" class="bg-emerald-500 text-white px-4 py-2 rounded-lg font-bold text-[10px] uppercase">WhatsApp</a>
-                        </td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-gray-50 transition-colors ${rowClass}`;
+                tr.innerHTML = `
+                    <td class="p-4 text-xs text-gray-500 font-medium whitespace-nowrap">${fechaFormat}</td>
+                    <td class="p-4">
+                        <div class="font-bold text-gray-800">${lead.nombre_cliente || 'Desconocido'}</div>
+                        <div class="text-xs text-gray-500 mt-1">${lead.origen_lead || 'Web'}</div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-sm font-semibold text-[#003da5]">${lead.tipo_operacion || '-'} ${lead.tipo_propiedad || ''}</div>
+                        <div class="text-xs text-gray-600 mt-1 break-words">📍 ${lead.ubicacion_deseada || 'Sin definir'}</div>
+                        <div class="text-xs text-gray-600 mt-1 break-words">💰 ${lead.presupuesto || 'A evaluar'}</div>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded text-xs font-bold ${scoreColor}">${lead.score_lead || 0} pts</span>
+                        <div class="mt-2 text-xs font-bold text-gray-700">${tempIcon}</div>
+                    </td>
+                    <td class="p-4">
+                        <p class="text-xs text-gray-700 italic bg-gray-100 p-2 rounded border border-gray-200 min-w-[200px]">
+                            "${lead.comentario_ia || 'Sin análisis disponible.'}"
+                        </p>
+                    </td>
+                    <td class="p-4 text-center">
+                        <a href="${waLink}" target="_blank" class="inline-flex items-center justify-center bg-[#25D366] text-white p-2 rounded-full hover:bg-green-600 shadow transition" title="Contactar por WhatsApp">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        </a>
+                    </td>
                 `;
+                tbody.appendChild(tr);
             });
         }
     </script>
