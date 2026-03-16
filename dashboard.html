@@ -101,7 +101,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxbHZnem9zdm9vZGp0cHhwZ3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NTUzNDMsImV4cCI6MjA4OTAzMTM0M30.n9AhJIDzqZ_5qOHADcL2XnAYzF3YTyEw_vMkL8rF0pA'; 
         // -------------------------------------------
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let allLeads = []; // Guardamos los leads en memoria para filtrarlos rápido
 
         function login() {
@@ -116,7 +116,7 @@
         }
 
         async function loadLeads() {
-            const { data, error } = await supabase.from('leads_inmobiliarios').select('*');
+            const { data, error } = await db.from('leads_inmobiliarios').select('*');
             if (error) { alert("Error conectando a la base de datos"); return; }
             
             allLeads = data;
