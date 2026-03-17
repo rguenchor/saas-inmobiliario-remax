@@ -8,32 +8,32 @@
     <style> body { background-color: #f4f5f7; font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-xl p-8 bg-white rounded-2xl shadow-xl border-t-8 border-[#dc1c2e]">
+    <div class="w-full max-w-xl p-6 sm:p-8 bg-white rounded-2xl shadow-xl border-t-8 border-[#dc1c2e]">
         
         <div class="text-center mb-6 border-b pb-6">
-            <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-16 mx-auto mb-4 object-contain">
-            <h2 class="text-2xl font-bold text-[#003da5]">Te ayudamos a encontrar tu propiedad ideal</h2>
-            <p class="text-gray-500 text-sm mt-2">Déjanos tus datos y un agente experto te contactará a la brevedad.</p>
+            <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-12 sm:h-16 mx-auto mb-4 object-contain">
+            <h2 class="text-xl sm:text-2xl font-bold text-[#003da5]">Te ayudamos a encontrar tu propiedad ideal</h2>
+            <p class="text-gray-500 text-xs sm:text-sm mt-2">Déjanos tus datos y un agente experto te contactará a la brevedad.</p>
         </div>
 
-        <form id="contactForm" class="space-y-5">
+        <form id="contactForm" class="space-y-4 sm:space-y-5">
             <input type="hidden" id="webhookUrl" value="https://hook.us2.make.com/f6h441b2wpgnxd7bxk0m2rqus8whxeip">
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="font-semibold text-gray-700 text-sm">Nombre</label>
-                    <input type="text" id="nombreCliente" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none" placeholder="Ej: Juan Pérez">
+                    <input type="text" id="nombreCliente" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm" placeholder="Ej: Juan Pérez">
                 </div>
                 <div>
                     <label class="font-semibold text-gray-700 text-sm">Teléfono (WhatsApp)</label>
-                    <input type="tel" id="telefonoLead" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none" placeholder="+569...">
+                    <input type="tel" id="telefonoLead" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm" placeholder="+569...">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="font-semibold text-gray-700 text-sm">¿Qué buscas?</label>
-                    <select id="tipoOperacion" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none">
+                    <select id="tipoOperacion" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm bg-white">
                         <option value="Comprar">Comprar</option>
                         <option value="Arrendar">Arrendar</option>
                         <option value="Vender">Vender mi propiedad</option>
@@ -41,7 +41,7 @@
                 </div>
                 <div>
                     <label class="font-semibold text-gray-700 text-sm">Tipo de Propiedad</label>
-                    <select id="tipoPropiedad" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none">
+                    <select id="tipoPropiedad" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm bg-white">
                         <option value="Casa">Casa</option>
                         <option value="Departamento">Departamento</option>
                         <option value="Terreno/Parcela">Terreno / Parcela</option>
@@ -52,18 +52,18 @@
 
             <div>
                 <label class="font-semibold text-gray-700 text-sm">Presupuesto Estimado / Zona de interés</label>
-                <input type="text" id="presupuestoZona" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none" placeholder="Ej: 5000 UF, en Providencia o Ñuñoa">
+                <input type="text" id="presupuestoZona" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm" placeholder="Ej: 5000 UF, en Providencia o Ñuñoa">
             </div>
 
             <div>
                 <label class="font-semibold text-gray-700 text-sm">Comentarios adicionales (Opcional)</label>
-                <textarea id="mensajeExtra" rows="2" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none" placeholder="Ej: Necesito que tenga 3 dormitorios y estacionamiento..."></textarea>
+                <textarea id="mensajeExtra" rows="2" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003da5] outline-none text-sm" placeholder="Ej: Necesito que tenga 3 dormitorios y estacionamiento..."></textarea>
             </div>
 
-            <button type="submit" id="sendBtn" class="w-full p-4 bg-[#003da5] text-white font-bold rounded-lg hover:bg-blue-800 transition-colors text-lg shadow-md">
+            <button type="submit" id="sendBtn" class="w-full p-3 sm:p-4 bg-[#003da5] text-white font-bold rounded-lg hover:bg-blue-800 transition-colors text-base sm:text-lg shadow-md mt-2">
                 Enviar Solicitud
             </button>
-            <div id="statusMsg" class="hidden mt-4 p-4 rounded-lg text-center font-medium"></div>
+            <div id="statusMsg" class="hidden mt-4 p-4 rounded-lg text-center font-medium text-sm"></div>
         </form>
     </div>
 
@@ -74,7 +74,7 @@
             const statusMsg = document.getElementById('statusMsg');
             const url = document.getElementById('webhookUrl').value;
 
-            // Unimos todos los campos en un solo súper-mensaje para que la IA lo analice perfecto
+            // La lógica de envío se mantiene exactamente igual
             const nombre = document.getElementById('nombreCliente').value;
             const op = document.getElementById('tipoOperacion').value;
             const prop = document.getElementById('tipoPropiedad').value;
@@ -100,11 +100,11 @@
 
                 if (!response.ok) throw new Error('Error en envío');
 
-                statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700 border border-green-200';
+                statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700 border border-green-200 text-sm';
                 statusMsg.innerHTML = '✅ ¡Solicitud enviada con éxito! Un agente te contactará pronto.';
                 document.getElementById('contactForm').reset();
             } catch (error) {
-                statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 border border-red-200';
+                statusMsg.className = 'mt-4 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 border border-red-200 text-sm';
                 statusMsg.innerHTML = '❌ Hubo un error al enviar. Por favor intenta de nuevo.';
             } finally {
                 btn.innerText = 'Enviar Solicitud'; 
