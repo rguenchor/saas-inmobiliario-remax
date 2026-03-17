@@ -11,69 +11,75 @@
         .hot-row { border-left: 4px solid #ef4444; }
         .warm-row { border-left: 4px solid #f59e0b; }
         .cold-row { border-left: 4px solid #3b82f6; }
+        /* Ocultar barra de scroll en navegadores webkit para un look más limpio en móvil */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="p-6">
-    <div id="loginScreen" class="flex items-center justify-center min-h-screen">
-        <div class="bg-white p-8 rounded-xl shadow-lg w-96 text-center border-t-8 border-[#003da5]">
-            <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-12 mx-auto mb-6 object-contain">
+<body class="p-3 sm:p-6">
+    <div id="loginScreen" class="flex items-center justify-center min-h-[80vh]">
+        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg w-full max-w-sm text-center border-t-8 border-[#003da5] mx-auto">
+            <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-10 sm:h-12 mx-auto mb-6 object-contain">
             <h2 class="text-xl font-bold mb-4 text-gray-800">Acceso Agentes</h2>
-            <input type="text" id="agentName" placeholder="Tu Nombre (Ej: Heinz)" class="w-full mb-3 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="password" id="agentPass" placeholder="Clave Maestra" class="w-full mb-4 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-            <button onclick="login()" class="w-full bg-[#dc1c2e] text-white font-bold p-3 rounded hover:bg-red-700 transition">Ingresar al Radar</button>
+            <input type="text" id="agentName" placeholder="Tu Nombre (Ej: Heinz)" class="w-full mb-3 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            <input type="password" id="agentPass" placeholder="Clave Maestra" class="w-full mb-4 p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            <button onclick="login()" class="w-full bg-[#dc1c2e] text-white font-bold p-3 rounded hover:bg-red-700 transition text-sm">Ingresar al Radar</button>
         </div>
     </div>
 
     <div id="dashboardScreen" class="hidden max-w-7xl mx-auto">
         
-        <div class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm mb-6 border-b-4 border-[#003da5]">
-            <div class="flex items-center gap-4">
-                <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-10 object-contain">
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 sm:p-6 rounded-xl shadow-sm mb-6 border-b-4 border-[#003da5] gap-4">
+            <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left w-full sm:w-auto">
+                <img src="./Remax_logo.jpg" alt="RE/MAX Logo" class="h-8 sm:h-10 object-contain">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-800 tracking-tight">Radar de Leads Inteligente</h1>
-                    <p class="text-gray-500 text-sm">Bienvenido, Agente <span id="displayAgent" class="font-bold text-[#dc1c2e]"></span> <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full ml-2">🟢 Auto-Sync Activo</span></p>
+                    <h1 class="text-xl sm:text-2xl font-black text-gray-800 tracking-tight">Radar de Leads</h1>
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1">
+                        <p class="text-gray-500 text-xs sm:text-sm">Agente <span id="displayAgent" class="font-bold text-[#dc1c2e]"></span></p>
+                        <span class="text-[10px] sm:text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">🟢 Auto-Sync</span>
+                    </div>
                 </div>
             </div>
-            <button onclick="loadLeads()" class="bg-[#003da5] text-white px-6 py-2 rounded-lg hover:bg-blue-800 font-bold shadow transition flex items-center gap-2">
+            <button onclick="loadLeads()" class="w-full sm:w-auto bg-[#003da5] text-white px-5 py-2.5 rounded-lg hover:bg-blue-800 font-bold shadow transition flex items-center justify-center gap-2 text-sm">
                 <span>🔄</span> <span id="syncText">Sincronizar Ahora</span>
             </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm col-span-2">
-                <h3 class="font-bold text-gray-700 mb-3 text-sm uppercase tracking-wider">Tablero de Temperatura (Click para filtrar)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm lg:col-span-2">
+                <h3 class="font-bold text-gray-700 mb-3 text-xs sm:text-sm uppercase tracking-wider text-center sm:text-left">Tablero de Temperatura (Click para filtrar)</h3>
                 
-                <div class="grid grid-cols-3 gap-4">
-                    <div onclick="setFilter('Fuego')" class="bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 hover:shadow-md transition transform hover:-translate-y-1">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div onclick="setFilter('Fuego')" class="bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 shadow-sm transition">
                         <div class="flex justify-between items-center">
-                            <span class="text-red-600 font-bold flex items-center gap-1">🔥 Fuego</span>
+                            <span class="text-red-600 font-bold flex items-center gap-1 text-sm sm:text-base">🔥 Fuego</span>
                             <span id="countFuego" class="bg-red-600 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow">0</span>
                         </div>
-                        <p class="text-xs text-gray-600 mt-1">Alta urgencia / Crédito listo. <b>Contactar < 5 min.</b></p>
+                        <p class="text-[11px] sm:text-xs text-gray-600 mt-1 leading-tight">Alta urgencia / Crédito listo.<br><b>Contactar < 5 min.</b></p>
                     </div>
 
-                    <div onclick="setFilter('Tibio')" class="bg-yellow-50 p-3 rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-100 hover:shadow-md transition transform hover:-translate-y-1">
+                    <div onclick="setFilter('Tibio')" class="bg-yellow-50 p-3 rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-100 shadow-sm transition">
                         <div class="flex justify-between items-center">
-                            <span class="text-yellow-600 font-bold flex items-center gap-1">☀️ Tibio</span>
+                            <span class="text-yellow-600 font-bold flex items-center gap-1 text-sm sm:text-base">☀️ Tibio</span>
                             <span id="countTibio" class="bg-yellow-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow">0</span>
                         </div>
-                        <p class="text-xs text-gray-600 mt-1">Cotizando opciones. <b>Enviar catálogo y visita.</b></p>
+                        <p class="text-[11px] sm:text-xs text-gray-600 mt-1 leading-tight">Cotizando opciones.<br><b>Enviar catálogo y visita.</b></p>
                     </div>
 
-                    <div onclick="setFilter('Frío')" class="bg-blue-50 p-3 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100 hover:shadow-md transition transform hover:-translate-y-1">
+                    <div onclick="setFilter('Frío')" class="bg-blue-50 p-3 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100 shadow-sm transition">
                         <div class="flex justify-between items-center">
-                            <span class="text-blue-600 font-bold flex items-center gap-1">❄️ Frío</span>
+                            <span class="text-blue-600 font-bold flex items-center gap-1 text-sm sm:text-base">❄️ Frío</span>
                             <span id="countFrio" class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow">0</span>
                         </div>
-                        <p class="text-xs text-gray-600 mt-1">Curiosos / Sin presupuesto. <b>Campaña de Nurturing.</b></p>
+                        <p class="text-[11px] sm:text-xs text-gray-600 mt-1 leading-tight">Curiosos / Sin presupuesto.<br><b>Campaña Nurturing.</b></p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-sm flex flex-col justify-center space-y-3 border-l-4 border-gray-200">
+            <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm flex flex-col justify-center space-y-4 lg:border-l-4 border-gray-100">
                 <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase">Filtro Activo</label>
-                    <select id="filterSelect" onchange="applyFilters()" class="w-full p-2 border rounded bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-[#003da5] outline-none font-bold">
+                    <label class="text-[11px] sm:text-xs font-bold text-gray-500 uppercase">Filtro Activo</label>
+                    <select id="filterSelect" onchange="applyFilters()" class="w-full p-2.5 border rounded-lg bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-[#003da5] outline-none font-bold">
                         <option value="Todos">Mostrar Todos los Leads</option>
                         <option value="Fuego">Solo Fuego 🔥</option>
                         <option value="Tibio">Solo Tibio ☀️</option>
@@ -81,8 +87,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase">Ordenar Lista</label>
-                    <select id="sortSelect" onchange="applyFilters()" class="w-full p-2 border rounded bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-[#003da5] outline-none">
+                    <label class="text-[11px] sm:text-xs font-bold text-gray-500 uppercase">Ordenar Lista</label>
+                    <select id="sortSelect" onchange="applyFilters()" class="w-full p-2.5 border rounded-lg bg-gray-50 text-sm mt-1 focus:ring-2 focus:ring-[#003da5] outline-none">
                         <option value="fecha_desc">Más recientes primero ⬇️</option>
                         <option value="fecha_asc">Más antiguos primero ⬆️</option>
                         <option value="score_desc">Mayor Score primero ⭐</option>
@@ -91,21 +97,26 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
-            <table class="w-full text-left text-sm">
-                <thead class="bg-gray-50 text-gray-600 border-b">
-                    <tr>
-                        <th class="p-4 font-bold">Fecha</th>
-                        <th class="p-4 font-bold">Cliente</th>
-                        <th class="p-4 font-bold">Interés & Presupuesto</th>
-                        <th class="p-4 font-bold">Score & Temp.</th>
-                        <th class="p-4 font-bold">Análisis Estratégico IA</th>
-                        <th class="p-4 font-bold text-center">Acción</th>
-                    </tr>
-                </thead>
-                <tbody id="leadsTableBody" class="divide-y divide-gray-100">
-                    </tbody>
-            </table>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto hide-scrollbar w-full">
+                <table class="w-full text-left text-sm min-w-[850px]">
+                    <thead class="bg-gray-50 text-gray-600 border-b">
+                        <tr>
+                            <th class="p-3 sm:p-4 font-bold whitespace-nowrap">Fecha</th>
+                            <th class="p-3 sm:p-4 font-bold whitespace-nowrap">Cliente</th>
+                            <th class="p-3 sm:p-4 font-bold whitespace-nowrap">Interés & Presupuesto</th>
+                            <th class="p-3 sm:p-4 font-bold whitespace-nowrap">Score & Temp.</th>
+                            <th class="p-3 sm:p-4 font-bold whitespace-nowrap">Análisis IA</th>
+                            <th class="p-3 sm:p-4 font-bold text-center whitespace-nowrap">Contactar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTableBody" class="divide-y divide-gray-100">
+                        </tbody>
+                </table>
+            </div>
+            <div class="bg-gray-50 text-center text-[10px] text-gray-400 py-1 sm:hidden border-t border-gray-100">
+                ↔️ Desliza hacia los lados para ver toda la tabla
+            </div>
         </div>
     </div>
 
@@ -123,10 +134,7 @@
                 document.getElementById('dashboardScreen').classList.remove('hidden');
                 document.getElementById('displayAgent').innerText = document.getElementById('agentName').value || 'Corredor';
                 
-                // Cargar leads inmediatamente
                 loadLeads();
-                
-                // ¡LA MAGIA DEL AUTO-REFRESCO CADA 10 SEGUNDOS!
                 refreshInterval = setInterval(loadLeads, 10000); 
             } else {
                 alert('Clave incorrecta');
@@ -150,14 +158,13 @@
             setTimeout(() => { btnText.innerText = 'Sincronizar Ahora'; }, 1000);
         }
 
-        // Cuenta los leads y actualiza los números en la infografía
         function updateCounters() {
             let countFuego = 0, countTibio = 0, countFrio = 0;
             
             allLeads.forEach(lead => {
                 if(lead.temperatura_lead === 'Fuego') countFuego++;
                 else if(lead.temperatura_lead === 'Tibio') countTibio++;
-                else countFrio++; // Por defecto si está vacío o es Frío
+                else countFrio++;
             });
 
             document.getElementById('countFuego').innerText = countFuego;
@@ -165,7 +172,6 @@
             document.getElementById('countFrio').innerText = countFrio;
         }
 
-        // Función que se activa al hacer clic en los recuadros de la infografía
         function setFilter(temperatura) {
             document.getElementById('filterSelect').value = temperatura;
             applyFilters();
@@ -176,13 +182,10 @@
             const sortVal = document.getElementById('sortSelect').value;
             let filtered = [...allLeads];
 
-            // 1. Filtrar
             if(filterVal !== 'Todos') {
-                // Usamos includes para atrapar 'Frío' y 'Frio' por si la IA olvida el tilde
                 filtered = filtered.filter(l => l.temperatura_lead && l.temperatura_lead.includes(filterVal.replace('í', 'i')));
             }
 
-            // 2. Ordenar
             filtered.sort((a, b) => {
                 if (sortVal === 'fecha_desc') return new Date(b.created_at) - new Date(a.created_at);
                 if (sortVal === 'fecha_asc') return new Date(a.created_at) - new Date(b.created_at);
@@ -214,28 +217,28 @@
                 const tr = document.createElement('tr');
                 tr.className = `hover:bg-gray-50 transition-colors ${rowClass}`;
                 tr.innerHTML = `
-                    <td class="p-4 text-xs text-gray-500 font-medium whitespace-nowrap">${fechaFormat}</td>
-                    <td class="p-4">
+                    <td class="p-3 sm:p-4 text-[11px] sm:text-xs text-gray-500 font-medium whitespace-nowrap">${fechaFormat}</td>
+                    <td class="p-3 sm:p-4">
                         <div class="font-bold text-gray-800">${lead.nombre_cliente || 'Desconocido'}</div>
-                        <div class="text-xs text-gray-500 mt-1">${lead.origen_lead || 'Web'}</div>
+                        <div class="text-[10px] sm:text-xs text-gray-500 mt-1">${lead.origen_lead || 'Web'}</div>
                     </td>
-                    <td class="p-4">
-                        <div class="text-sm font-semibold text-[#003da5]">${lead.tipo_operacion || '-'} ${lead.tipo_propiedad || ''}</div>
-                        <div class="text-xs text-gray-600 mt-1 break-words">📍 ${lead.ubicacion_deseada || 'Sin definir'}</div>
-                        <div class="text-xs text-gray-600 mt-1 break-words">💰 ${lead.presupuesto || 'A evaluar'}</div>
+                    <td class="p-3 sm:p-4">
+                        <div class="text-[13px] sm:text-sm font-semibold text-[#003da5]">${lead.tipo_operacion || '-'} ${lead.tipo_propiedad || ''}</div>
+                        <div class="text-[11px] sm:text-xs text-gray-600 mt-1 break-words max-w-[150px] sm:max-w-xs">📍 ${lead.ubicacion_deseada || 'Sin definir'}</div>
+                        <div class="text-[11px] sm:text-xs text-gray-600 mt-1 font-medium">💰 ${lead.presupuesto || 'A evaluar'}</div>
                     </td>
-                    <td class="p-4">
-                        <span class="px-2 py-1 rounded text-xs font-bold ${scoreColor}">${lead.score_lead || 0} pts</span>
-                        <div class="mt-2 text-xs font-bold text-gray-700">${tempIcon}</div>
+                    <td class="p-3 sm:p-4 whitespace-nowrap">
+                        <span class="px-2 py-1 rounded text-[10px] sm:text-xs font-bold ${scoreColor}">${lead.score_lead || 0} pts</span>
+                        <div class="mt-2 text-[11px] sm:text-xs font-bold text-gray-700">${tempIcon}</div>
                     </td>
-                    <td class="p-4">
-                        <p class="text-xs text-gray-700 italic bg-gray-100 p-2 rounded border border-gray-200 min-w-[200px]">
+                    <td class="p-3 sm:p-4">
+                        <p class="text-[11px] sm:text-xs text-gray-700 italic bg-gray-100 p-2 rounded border border-gray-200 min-w-[180px] sm:min-w-[250px] whitespace-normal">
                             "${lead.comentario_ia || 'Sin análisis disponible.'}"
                         </p>
                     </td>
-                    <td class="p-4 text-center">
-                        <a href="${waLink}" target="_blank" class="inline-flex items-center justify-center bg-[#25D366] text-white p-2 rounded-full hover:bg-green-600 shadow transition hover:scale-110 transform" title="Contactar por WhatsApp">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    <td class="p-3 sm:p-4 text-center">
+                        <a href="${waLink}" target="_blank" class="inline-flex items-center justify-center bg-[#25D366] text-white p-2.5 rounded-full hover:bg-green-600 shadow-md transition hover:scale-110 transform" title="Contactar por WhatsApp">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                         </a>
                     </td>
                 `;
